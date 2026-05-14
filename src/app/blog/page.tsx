@@ -1,7 +1,7 @@
 import { BlogCard } from "@/components/BlogCard";
 import { PageTransition, Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
-import { blogPosts } from "@/lib/content";
+import { getBlogPosts } from "@/lib/data";
 
 const categories = ["Psychology", "Leadership", "Education", "Wellness"];
 
@@ -10,7 +10,11 @@ export const metadata = {
   description: "Psychology, leadership, education, and wellness insights by Steve Muthusi, PhD."
 };
 
-export default function BlogPage() {
+export const revalidate = 60;
+
+export default async function BlogPage() {
+  const blogPosts = await getBlogPosts();
+
   return (
     <PageTransition>
       <Section

@@ -1,14 +1,18 @@
 import { Quote } from "lucide-react";
 import { PageTransition, Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
-import { testimonials } from "@/lib/content";
+import { getTestimonials } from "@/lib/data";
 
 export const metadata = {
   title: "Testimonials",
   description: "Student, colleague, and PDC participant testimonials."
 };
 
-export default function TestimonialsPage() {
+export const revalidate = 60;
+
+export default async function TestimonialsPage() {
+  const testimonials = await getTestimonials();
+
   return (
     <PageTransition>
       <Section

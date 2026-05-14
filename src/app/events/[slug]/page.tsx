@@ -5,7 +5,10 @@ import { Comments } from "@/components/Comments";
 import { PageTransition } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 import { events } from "@/lib/content";
+import { getEventBySlug } from "@/lib/data";
 import { formatDate } from "@/lib/utils";
+
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return events.map((event) => ({ slug: event.slug }));
@@ -13,7 +16,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const event = events.find((item) => item.slug === slug);
+  const event = await getEventBySlug(slug);
   return {
     title: event?.title ?? "Event",
     description: event?.description
@@ -22,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const event = events.find((item) => item.slug === slug);
+  const event = await getEventBySlug(slug);
   if (!event) notFound();
 
   return (

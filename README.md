@@ -43,6 +43,15 @@ With Firebase configured, create an email/password admin user in Firebase Auth a
 npm run seed
 ```
 
+## Production Checklist
+
+- Set `NEXT_PUBLIC_SITE_URL` to the deployed domain in Vercel.
+- Set all `NEXT_PUBLIC_FIREBASE_*` variables in Vercel.
+- Set `NEXT_PUBLIC_ENABLE_DEMO_ADMIN=false` in production.
+- Set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` for server-side Firestore/API access.
+- Create a real Firebase Authentication admin user.
+- Configure Firestore and Storage security rules before accepting live content.
+
 ## Deployment
 
 Deploy the frontend to Vercel.

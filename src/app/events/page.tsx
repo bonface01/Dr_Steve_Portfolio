@@ -1,7 +1,7 @@
 import { EventCard } from "@/components/EventCard";
 import { PageTransition, Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
-import { events } from "@/lib/content";
+import { getEvents } from "@/lib/data";
 
 const types = ["Conferences", "Workshops", "Lectures", "PDC events", "University activities"];
 
@@ -10,7 +10,11 @@ export const metadata = {
   description: "Conferences, workshops, lectures, PDC events, and university activities."
 };
 
-export default function EventsPage() {
+export const revalidate = 60;
+
+export default async function EventsPage() {
+  const events = await getEvents();
+
   return (
     <PageTransition>
       <Section

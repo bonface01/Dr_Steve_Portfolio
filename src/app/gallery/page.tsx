@@ -1,14 +1,18 @@
 import { GalleryMasonry } from "@/components/GalleryMasonry";
 import { PageTransition } from "@/components/Reveal";
 import { Section } from "@/components/Section";
-import { galleryItems } from "@/lib/content";
+import { getGalleryItems } from "@/lib/data";
 
 export const metadata = {
   title: "Gallery",
   description: "Masonry gallery for events, lectures, workshops, and community engagement."
 };
 
-export default function GalleryPage() {
+export const revalidate = 60;
+
+export default async function GalleryPage() {
+  const galleryItems = await getGalleryItems();
+
   return (
     <PageTransition>
       <Section

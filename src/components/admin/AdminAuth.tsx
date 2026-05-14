@@ -7,6 +7,7 @@ import { AdminDashboard } from "./AdminDashboard";
 
 const demoEmail = process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL || "admin@pdc.local";
 const demoPassword = process.env.NEXT_PUBLIC_DEMO_ADMIN_PASSWORD || "steve-admin-demo";
+const isDemoAdminEnabled = process.env.NEXT_PUBLIC_ENABLE_DEMO_ADMIN === "true";
 
 export function AdminAuth() {
   const [ready, setReady] = useState(false);
@@ -16,7 +17,7 @@ export function AdminAuth() {
   useEffect(() => {
     const auth = getClientAuth();
     if (!auth) {
-      setAuthed(window.sessionStorage.getItem("demo-admin") === "true");
+      setAuthed(isDemoAdminEnabled && window.sessionStorage.getItem("demo-admin") === "true");
       setReady(true);
       return;
     }
@@ -44,11 +45,15 @@ export function AdminAuth() {
       return;
     }
 
-    if (email === demoEmail && password === demoPassword) {
+    if (isDemoAdminEnabled && email === demoEmail && password === demoPassword) {
       window.sessionStorage.setItem("demo-admin", "true");
       setAuthed(true);
     } else {
-      setError("Invalid demo credentials.");
+      setError(
+        isDemoAdminEnabled
+          ? "Invalid demo credentials."
+          : "Firebase Auth is not configured for this deployment."
+      );
     }
   }
 
@@ -75,7 +80,9 @@ export function AdminAuth() {
         <p className="mt-3 text-sm leading-6 text-slateText">
           {isFirebaseConfigured
             ? "Sign in with a Firebase Auth administrator account."
-            : `Demo login: ${demoEmail} / ${demoPassword}`}
+            : isDemoAdminEnabled
+              ? `Demo login: ${demoEmail} / ${demoPassword}`
+              : "Firebase Auth must be configured before admin access is available."}
         </p>
         <label className="mt-5 grid gap-2 text-sm font-bold">
           Email

@@ -6,9 +6,17 @@ import { EventCarousel } from "@/components/EventCarousel";
 import { PageTransition, Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 import { StatsCounter } from "@/components/StatsCounter";
-import { blogPosts, events, featuredAreas, testimonials } from "@/lib/content";
+import { featuredAreas } from "@/lib/content";
+import { getBlogPosts, getEvents, getTestimonials } from "@/lib/data";
 
-export default function HomePage() {
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const [blogPosts, events, testimonials] = await Promise.all([
+    getBlogPosts(),
+    getEvents(),
+    getTestimonials()
+  ]);
   const featuredEvents = events.filter((event) => event.featured);
   const latestPosts = blogPosts.slice(0, 3);
 

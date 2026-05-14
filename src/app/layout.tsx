@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { FirebaseAnalytics } from "@/components/FirebaseAnalytics";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 
@@ -17,6 +18,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dr-steve-portfolio.vercel.app"),
   title: {
     default: "Steve Muthusi, PhD | Psychologist, Lecturer, Leadership Mentor",
     template: "%s | Steve Muthusi, PhD"
@@ -55,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
+        <FirebaseAnalytics />
         <Header />
         <main>{children}</main>
         <Footer />

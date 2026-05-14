@@ -6,7 +6,10 @@ import { LikeShare } from "@/components/LikeShare";
 import { PageTransition } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 import { blogPosts } from "@/lib/content";
+import { getBlogPostBySlug, getBlogPosts } from "@/lib/data";
 import { formatDate } from "@/lib/utils";
+
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -14,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = blogPosts.find((item) => item.slug === slug);
+  const post = await getBlogPostBySlug(slug);
   return {
     title: post?.title ?? "Blog Post",
     description: post?.excerpt
@@ -23,12 +26,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = blogPosts.find((item) => item.slug === slug);
+  const [post, posts] = await Promise.all([getBlogPostBySlug(slug), getBlogPosts()]);
   if (!post) notFound();
 
-  const related = blogPosts
+  const related = posts
     .filter((item) => item.id !== post.id && item.category === post.category)
-    .concat(blogPosts.filter((item) => item.id !== post.id && item.category !== post.category))
+    .concat(posts.filter((item) => item.id !== post.id && item.category !== post.category))
     .slice(0, 3);
 
   return (
