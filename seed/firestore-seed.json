@@ -1,0 +1,65 @@
+{
+  "blogPosts": [
+    {
+      "id": "post-001",
+      "slug": "leadership-begins-with-self-awareness",
+      "title": "Leadership Begins With Self-Awareness",
+      "excerpt": "A psychology-informed view of leadership that starts with attention, reflection, and personal responsibility.",
+      "category": "Leadership",
+      "coverImage": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1400&q=80",
+      "author": "Steve Muthusi, PhD",
+      "publishedAt": "2026-02-12",
+      "likes": 48,
+      "featured": true,
+      "content": "<p>Leadership is often described through outcomes: influence, direction, performance, and public courage. Yet the inner life of a leader is where the work begins.</p>"
+    },
+    {
+      "id": "post-002",
+      "slug": "mental-wellness-in-high-performance-environments",
+      "title": "Mental Wellness in High Performance Environments",
+      "excerpt": "Why excellence must be built with rest, reflection, and psychologically safe communities.",
+      "category": "Wellness",
+      "coverImage": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1400&q=80",
+      "author": "Steve Muthusi, PhD",
+      "publishedAt": "2026-01-24",
+      "likes": 36,
+      "content": "<p>High performance settings can reward speed while quietly neglecting restoration. Wellness is not the absence of pressure; it is the presence of habits and relationships that help people carry pressure wisely.</p>"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-001",
+      "slug": "pdc-leadership-intensive",
+      "title": "PDC Leadership Intensive",
+      "date": "2026-06-18",
+      "type": "PDC events",
+      "description": "A focused leadership formation gathering for professionals, student leaders, and community builders.",
+      "coverImage": "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1400&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80"
+      ],
+      "location": "Nairobi, Kenya",
+      "featured": true
+    }
+  ],
+  "galleryItems": [
+    {
+      "id": "gallery-001",
+      "title": "Leadership cohort dialogue",
+      "category": "Events",
+      "image": "https://images.unsplash.com/photo-1515168833906-d2a3b82b1a48?auto=format&fit=crop&w=900&q=80",
+      "description": "PDC leaders discussing service, identity, and personal excellence."
+    }
+  ],
+  "comments": [
+    {
+      "id": "comment-001",
+      "entityType": "blog",
+      "entityId": "post-001",
+      "name": "Grace",
+      "message": "This connects leadership to inner work in a very practical way.",
+      "status": "approved",
+      "createdAt": "2026-02-14T10:00:00.000Z"
+    }
+  ]
+}
