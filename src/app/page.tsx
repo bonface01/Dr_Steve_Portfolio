@@ -55,9 +55,20 @@ export default async function HomePage() {
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.34em] text-white/82">
               Academic Psychology - Leadership Development - PDC
             </p>
-            <h1 className="font-heading text-6xl leading-[0.95] sm:text-7xl lg:text-8xl">
-              Steve Muthusi, PhD
-            </h1>
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/20 bg-white/10">
+                <Image
+                  src={brandImages.profile.src}
+                  alt={brandImages.profile.alt}
+                  fill
+                  priority
+                  className="object-cover"
+                />
+              </div>
+              <h1 className="font-heading text-6xl leading-[0.95] sm:text-7xl lg:text-8xl">
+                Steve Muthusi, PhD
+              </h1>
+            </div>
             <p className="mt-5 font-heading text-3xl text-white/92 sm:text-4xl">
               Mind • Brain • Coaching • Development
             </p>

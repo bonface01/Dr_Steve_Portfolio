@@ -1,37 +1,53 @@
+const profileImages = [
+  {
+    src: "/brand/about-portrait.jpg",
+    alt: "Dr. Steve Muthusi portrait from The Inner Shift PDC event",
+    faceConfidence: 0.98
+  }
+];
+
+function selectBestProfileImage(images: Array<{ src: string; alt: string; faceConfidence: number }>) {
+  return images.reduce((best, current) =>
+    current.faceConfidence > best.faceConfidence ? current : best,
+    images[0]
+  );
+}
+
 export const brandImages = {
   hero: [
     {
       src: "/brand/hero-speaking-wide.jpg",
-      alt: "Steve Muthusi speaking at a PDC leadership gathering"
+      alt: "Steve Muthusi speaking at a The Inner Shift PDC leadership gathering"
     },
     {
       src: "/brand/hero-audience-wide.jpg",
-      alt: "Participants listening during a psychology and leadership session"
+      alt: "Participants listening during a psychology and leadership session at The Inner Shift PDC"
     },
     {
       src: "/brand/hero-dialogue-wide.jpg",
-      alt: "PDC dialogue session with audience engagement"
+      alt: "PDC dialogue session with audience engagement during The Inner Shift"
     },
     {
       src: "/brand/hero-stage-wide.jpg",
-      alt: "Facilitator at the podium during a PDC event"
+      alt: "Facilitator at the podium during a The Inner Shift PDC event"
     }
   ],
+  profile: selectBestProfileImage(profileImages),
   about: {
     src: "/brand/about-portrait.jpg",
-    alt: "Steve Muthusi speaking during The Inner Shift PDC event"
+    alt: "Dr. Steve Muthusi portrait from The Inner Shift PDC event"
   },
   academia: {
     src: "/brand/academia-audience.jpg",
-    alt: "Audience members reflecting during an academic-style session"
+    alt: "Audience members reflecting during an academic-style session at The Inner Shift PDC"
   },
   consultation: {
     src: "/brand/consultation-mentorship.jpg",
-    alt: "Mentorship conversation and leadership engagement"
+    alt: "Mentorship conversation and leadership engagement at The Inner Shift PDC"
   },
   coaching: {
     src: "/brand/consultation-coaching.jpg",
-    alt: "Coaching demonstration at a PDC session"
+      alt: "Coaching demonstration at a The Inner Shift PDC session"
   },
   events: {
     src: "/brand/events-group.jpg",
@@ -39,24 +55,24 @@ export const brandImages = {
   },
   recognition: {
     src: "/brand/events-recognition.jpg",
-    alt: "Recognition moment during a PDC engagement"
+    alt: "Recognition moment during a The Inner Shift PDC engagement"
   },
   gallery: [
     {
       src: "/brand/gallery-reflection.jpg",
-      alt: "Recognition and reflection during a PDC event"
+      alt: "Recognition and reflection during a The Inner Shift PDC event"
     },
     {
       src: "/brand/gallery-speaking.jpg",
-      alt: "Speaker addressing participants during The Inner Shift"
+      alt: "Speaker addressing participants during The Inner Shift PDC"
     },
     {
       src: "/brand/events-recognition.jpg",
-      alt: "Participant recognition moment"
+      alt: "Participant recognition moment at The Inner Shift PDC"
     },
     {
       src: "/brand/consultation-coaching.jpg",
-      alt: "Mentorship and coaching moment"
+      alt: "Mentorship and coaching moment during The Inner Shift PDC"
     }
   ]
 };
