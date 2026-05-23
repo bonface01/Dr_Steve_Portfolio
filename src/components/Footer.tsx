@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
+import { primaryNav } from "@/lib/brand";
 import { profile } from "@/lib/content";
+import { SocialLinks } from "./SocialLinks";
 
 export function Footer() {
   return (
@@ -9,9 +11,10 @@ export function Footer() {
         <div>
           <p className="font-heading text-3xl">{profile.name}</p>
           <p className="mt-3 max-w-xl text-white/68">
-            Psychologist, lecturer, and leadership mentor advancing reflective practice,
-            academic excellence, and purposeful influence through PDC.
+            Psychologist, lecturer, and leadership mentor advancing academic psychology,
+            mentorship, and thoughtful leadership development.
           </p>
+          <SocialLinks className="mt-5" showHandle />
         </div>
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.24em] text-white">Connect</p>
@@ -23,10 +26,11 @@ export function Footer() {
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.24em] text-white">Explore</p>
           <div className="mt-4 grid gap-2 text-sm text-white/70">
-            <Link href="/academic" className="hover:text-white">Academic profile</Link>
-            <Link href="/leadership" className="hover:text-white">PDC leadership</Link>
-            <Link href="/blog" className="hover:text-white">Insights blog</Link>
-            <Link href="/contact" className="hover:text-white">Consultation request</Link>
+            {primaryNav.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-white">
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

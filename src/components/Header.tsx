@@ -4,17 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { primaryNav } from "@/lib/brand";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { href: "/about", label: "About" },
-  { href: "/academic", label: "Academic" },
-  { href: "/leadership", label: "PDC" },
-  { href: "/blog", label: "Blog" },
-  { href: "/events", label: "Events" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/contact", label: "Contact" }
-];
 
 export function Header() {
   const pathname = usePathname();
@@ -27,24 +18,22 @@ export function Header() {
           Steve Muthusi
         </Link>
         <div className="hidden items-center gap-1 lg:flex">
-          {navItems.map((item) => (
+          {primaryNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
                 "rounded-full px-3 py-2 text-sm text-slateText transition hover:bg-royal/8 hover:text-royal",
-                pathname === item.href && "bg-royal/10 text-royal"
+                (pathname === item.href ||
+                  (item.href === "/commentaries" && pathname.startsWith("/blog")) ||
+                  (item.href === "/academia" && pathname.startsWith("/academic")) ||
+                  (item.href === "/consultation" && pathname.startsWith("/leadership"))) &&
+                  "bg-royal/10 text-royal"
               )}
             >
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/admin"
-            className="ml-2 rounded-full bg-royal px-4 py-2 text-sm font-semibold text-white transition hover:bg-institutional"
-          >
-            Admin
-          </Link>
         </div>
         <button
           type="button"
@@ -58,7 +47,7 @@ export function Header() {
       {open ? (
         <div className="mx-auto mt-3 max-w-7xl rounded-3xl border border-royal/10 bg-white/98 p-4 text-navy shadow-2xl backdrop-blur-2xl lg:hidden">
           <div className="grid gap-1">
-            {navItems.map((item) => (
+            {primaryNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -68,13 +57,6 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="rounded-2xl px-4 py-3 text-sm font-semibold text-royal hover:bg-royal/8"
-            >
-              Admin
-            </Link>
           </div>
         </div>
       ) : null}

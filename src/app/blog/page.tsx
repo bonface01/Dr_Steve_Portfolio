@@ -1,43 +1,10 @@
-import { BlogCard } from "@/components/BlogCard";
-import { PageTransition, Reveal } from "@/components/Reveal";
-import { Section } from "@/components/Section";
-import { getBlogPosts } from "@/lib/data";
-
-const categories = ["Psychology", "Leadership", "Education", "Wellness"];
+import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Blog",
-  description: "Psychology, leadership, education, and wellness insights by Steve Muthusi, PhD."
+  title: "Commentaries",
+  description: "Reflective psychology, leadership, education, and wellness commentaries by Steve Muthusi, PhD."
 };
 
-export const revalidate = 60;
-
-export default async function BlogPage() {
-  const blogPosts = await getBlogPosts();
-
-  return (
-    <PageTransition>
-      <Section
-        className="bg-surface bg-academic-wash pt-36"
-        eyebrow="Blog"
-        title="Psychology-informed insight for leadership, wellness, and learning."
-        intro="A CMS-ready writing system with categories, featured images, comments, likes, sharing, and related posts."
-      >
-        <div className="mb-8 flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <span key={category} className="rounded-full border border-navy/10 bg-white px-4 py-2 text-sm font-bold text-navy">
-              {category}
-            </span>
-          ))}
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {blogPosts.map((post, index) => (
-            <Reveal key={post.id} delay={index * 0.06}>
-              <BlogCard post={post} />
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-    </PageTransition>
-  );
+export default function BlogPage() {
+  redirect("/commentaries");
 }

@@ -2,8 +2,8 @@
 
 import { MessageCircle, Send } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { comments as seededComments } from "@/lib/content";
-import type { Comment } from "@/lib/types";
+import { getApprovedComments, submitComment } from "@/lib/comments-service";
+import type { CommentData } from "@/lib/comments-service";
 import { formatDate } from "@/lib/utils";
 
 export function Comments({
@@ -13,52 +13,61 @@ export function Comments({
   entityId: string;
   entityType: "blog" | "event";
 }) {
-  const storageKey = `comments:${entityType}:${entityId}`;
-  const [items, setItems] = useState<Comment[]>([]);
+  const [items, setItems] = useState<CommentData[]>([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [notice, setNotice] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
+  // Load approved comments from Firestore
   useEffect(() => {
-    const saved = window.localStorage.getItem(storageKey);
-    const localItems = saved ? (JSON.parse(saved) as Comment[]) : [];
-    setItems([
-      ...seededComments.filter(
-        (comment) =>
-          comment.entityType === entityType &&
-          comment.entityId === entityId &&
-          comment.status === "approved"
-      ),
-      ...localItems.filter((comment) => comment.status === "approved")
-    ]);
-  }, [entityId, entityType, storageKey]);
+    async function loadComments() {
+      setIsLoading(true);
+      const comments = await getApprovedComments(entityType, entityId);
+      setItems(comments);
+      setIsLoading(false);
+    }
+
+    loadComments();
+  }, [entityId, entityType]);
 
   const approved = useMemo(() => items.filter((item) => item.status === "approved"), [items]);
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!name.trim() || !message.trim()) return;
-    const next: Comment = {
-      id: `comment-${Date.now()}`,
-      entityId,
-      entityType,
-      name,
-      message,
-      status: "pending",
-      createdAt: new Date().toISOString()
-    };
-    const saved = window.localStorage.getItem(storageKey);
-    const existing = saved ? (JSON.parse(saved) as Comment[]) : [];
-    window.localStorage.setItem(storageKey, JSON.stringify([next, ...existing]));
-    window.localStorage.setItem("comments:moderation", JSON.stringify([next, ...readModerationQueue()]));
-    setName("");
-    setMessage("");
-    setNotice("Comment received. It will appear after approval.");
-  }
+    setError("");
+    setNotice("");
 
-  function readModerationQueue() {
-    const saved = window.localStorage.getItem("comments:moderation");
-    return saved ? (JSON.parse(saved) as Comment[]) : [];
+    if (!name.trim() || !message.trim()) {
+      setError("Name and message are required");
+      return;
+    }
+
+    if (message.length < 5) {
+      setError("Comment must be at least 5 characters");
+      return;
+    }
+
+    if (message.length > 2000) {
+      setError("Comment must be less than 2000 characters");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const result = await submitComment(entityType, entityId, name, message);
+
+    if (result.success) {
+      setName("");
+      setMessage("");
+      setNotice("Comment submitted! It will appear after approval.");
+    } else {
+      setError(result.error || "Failed to submit comment");
+    }
+
+    setIsSubmitting(false);
   }
 
   return (
@@ -74,7 +83,9 @@ export function Comments({
       </div>
 
       <div className="mt-6 space-y-4">
-        {approved.length ? (
+        {isLoading ? (
+          <p className="rounded-[8px] bg-surface p-4 text-sm text-slateText">Loading comments...</p>
+        ) : approved.length ? (
           approved.map((comment) => (
             <article key={comment.id} className="rounded-[8px] bg-surface p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -93,12 +104,13 @@ export function Comments({
         )}
       </div>
 
-      <form onSubmit={submit} className="mt-6 grid gap-3">
+      <form onSubmit={handleSubmit} className="mt-6 grid gap-3">
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Your name"
           className="min-h-12 rounded-[8px] border border-navy/10 px-4 outline-none focus:border-royal"
+          disabled={isSubmitting}
         />
         <textarea
           value={message}
@@ -106,13 +118,16 @@ export function Comments({
           placeholder="Write a thoughtful comment"
           rows={4}
           className="rounded-[8px] border border-navy/10 px-4 py-3 outline-none focus:border-royal"
+          disabled={isSubmitting}
         />
         <button
           type="submit"
-          className="inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-royal px-5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+          disabled={isSubmitting}
+          className="inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-royal px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <Send className="h-4 w-4" /> Submit comment
+          <Send className="h-4 w-4" /> {isSubmitting ? "Submitting..." : "Submit comment"}
         </button>
+        {error ? <p className="text-sm font-semibold text-red-600">{error}</p> : null}
         {notice ? <p className="text-sm font-semibold text-royal">{notice}</p> : null}
       </form>
     </section>

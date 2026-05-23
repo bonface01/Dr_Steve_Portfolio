@@ -8,13 +8,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
     "/about",
-    "/academic",
-    "/leadership",
-    "/blog",
-    "/events",
-    "/gallery",
-    "/testimonials",
-    "/contact"
+    "/academia",
+    "/consultation",
+    "/commentaries",
+    "/events"
   ].map((route) => ({
     url: `${siteUrl}${route}`,
     lastModified: now,
@@ -22,8 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : 0.8
   }));
 
-  const blogRoutes = blogPosts.map((post) => ({
-    url: `${siteUrl}/blog/${post.slug}`,
+  const commentaryRoutes = blogPosts.map((post) => ({
+    url: `${siteUrl}/commentaries/${post.slug}`,
     lastModified: new Date(post.publishedAt),
     changeFrequency: "monthly" as const,
     priority: 0.7
@@ -36,5 +33,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6
   }));
 
-  return [...staticRoutes, ...blogRoutes, ...eventRoutes];
+  return [...staticRoutes, ...commentaryRoutes, ...eventRoutes];
 }

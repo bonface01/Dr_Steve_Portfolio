@@ -4,10 +4,16 @@ import { ArrowUpRight } from "lucide-react";
 import type { BlogPost } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
-export function BlogCard({ post }: { post: BlogPost }) {
+export function BlogCard({
+  post,
+  hrefPrefix = "/commentaries"
+}: {
+  post: BlogPost;
+  hrefPrefix?: string;
+}) {
   return (
     <Link
-      href={`/blog/${post.slug}`}
+      href={`${hrefPrefix}/${post.slug}`}
       className="group overflow-hidden rounded-[8px] border border-navy/10 bg-white shadow-institutional transition duration-300 hover:-translate-y-1"
     >
       <div className="relative aspect-[16/10] overflow-hidden">
@@ -27,7 +33,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         <h3 className="font-heading text-2xl leading-tight text-navy">{post.title}</h3>
         <p className="mt-3 line-clamp-3 text-sm leading-6 text-slateText">{post.excerpt}</p>
         <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-navy">
-          Read insight <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-1" />
+          Read commentary <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-1" />
         </span>
       </div>
     </Link>

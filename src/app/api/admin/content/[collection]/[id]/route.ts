@@ -1,57 +1,148 @@
 import { NextResponse } from "next/server";
-import { getAdminAuth, getAdminDb } from "@/lib/firebaseAdmin";
+import { requireAdminFromRequest } from "@/lib/auth";
+import { getAdminDb } from "@/lib/firebaseAdmin";
+import {
+  validateBlogPostInput,
+  validateEventInput,
+  validateGalleryInput
+} from "@/lib/validation";
+import {
+  apiUnauthorized,
+  apiNotFound,
+  apiError,
+  apiSuccess,
+  handleApiError
+} from "@/lib/api-utils";
 
-const allowedCollections = new Set(["blogPosts", "events", "galleryItems", "comments"]);
+const ALLOWED_COLLECTIONS = new Set(["blogPosts", "events", "galleryItems", "comments"]);
 
-async function assertAdmin(request: Request) {
-  const auth = getAdminAuth();
-  if (!auth) return false;
-  const token = request.headers.get("authorization")?.replace("Bearer ", "");
-  if (!token) return false;
-  await auth.verifyIdToken(token);
-  return true;
-}
-
-export async function DELETE(
+/**
+ * GET /api/admin/content/[collection]/[id]
+ * Fetch a specific item (admin only)
+ */
+export async function GET(
   request: Request,
   { params }: { params: Promise<{ collection: string; id: string }> }
 ) {
-  const { collection, id } = await params;
-  if (!allowedCollections.has(collection)) {
-    return NextResponse.json({ error: "Unknown collection" }, { status: 404 });
-  }
-  if (!(await assertAdmin(request))) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  try {
+    const { collection, id } = await params;
 
-  const db = getAdminDb();
-  if (!db) {
-    return NextResponse.json({ error: "Firebase Admin is not configured" }, { status: 501 });
-  }
+    // Verify admin
+    const user = await requireAdminFromRequest(request);
+    if (!user) return apiUnauthorized();
 
-  await db.collection(collection).doc(id).delete();
-  return NextResponse.json({ ok: true });
+    if (!ALLOWED_COLLECTIONS.has(collection)) {
+      return apiNotFound(`Collection '${collection}' not found`);
+    }
+
+    const db = getAdminDb();
+    if (!db) {
+      return apiError("Firebase Admin not configured");
+    }
+
+    const doc = await db.collection(collection).doc(id).get();
+    if (!doc.exists) {
+      return apiNotFound(`Document not found`);
+    }
+
+    return apiSuccess({
+      id: doc.id,
+      ...doc.data()
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
 }
 
+/**
+ * PATCH /api/admin/content/[collection]/[id]
+ * Update an item (admin only)
+ */
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ collection: string; id: string }> }
 ) {
-  const { collection, id } = await params;
-  if (!allowedCollections.has(collection)) {
-    return NextResponse.json({ error: "Unknown collection" }, { status: 404 });
-  }
-  if (!(await assertAdmin(request))) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  try {
+    const { collection, id } = await params;
 
-  const db = getAdminDb();
-  if (!db) {
-    return NextResponse.json({ error: "Firebase Admin is not configured" }, { status: 501 });
-  }
+    // Verify admin
+    const user = await requireAdminFromRequest(request);
+    if (!user) return apiUnauthorized();
 
-  const body = await request.json();
-  const item = { ...body, id, updatedAt: new Date().toISOString() };
-  await db.collection(collection).doc(id).set(item, { merge: true });
-  return NextResponse.json({ item });
+    if (!ALLOWED_COLLECTIONS.has(collection)) {
+      return apiNotFound(`Collection '${collection}' not found`);
+    }
+
+    const body = await request.json();
+
+    // Validate based on collection type
+    let validated: any;
+    if (collection === "blogPosts") {
+      validated = validateBlogPostInput({ ...body, id });
+    } else if (collection === "events") {
+      validated = validateEventInput({ ...body, id });
+    } else if (collection === "galleryItems") {
+      validated = validateGalleryInput({ ...body, id });
+    } else {
+      return apiNotFound("Unsupported collection");
+    }
+
+    const db = getAdminDb();
+    if (!db) {
+      return apiError("Firebase Admin not configured");
+    }
+
+    await db.collection(collection).doc(id).set(
+      {
+        ...validated,
+        updatedAt: new Date().toISOString(),
+        updatedBy: user.uid
+      },
+      { merge: true }
+    );
+
+    return apiSuccess({
+      id,
+      ...validated,
+      updatedAt: new Date().toISOString()
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
 }
+
+/**
+ * DELETE /api/admin/content/[collection]/[id]
+ * Delete an item (admin only)
+ */
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ collection: string; id: string }> }
+) {
+  try {
+    const { collection, id } = await params;
+
+    // Verify admin
+    const user = await requireAdminFromRequest(request);
+    if (!user) return apiUnauthorized();
+
+    if (!ALLOWED_COLLECTIONS.has(collection)) {
+      return apiNotFound(`Collection '${collection}' not found`);
+    }
+
+    const db = getAdminDb();
+    if (!db) {
+      return apiError("Firebase Admin not configured");
+    }
+
+    await db.collection(collection).doc(id).delete();
+
+    return apiSuccess({
+      id,
+      deleted: true
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+

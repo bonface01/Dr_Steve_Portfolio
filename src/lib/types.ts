@@ -59,4 +59,26 @@ export type Comment = {
   message: string;
   status: "pending" | "approved";
   createdAt: string;
+  updatedAt?: string;
+};
+
+export type ContactSubmission = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  type: string;
+  message: string;
+  createdAt: string;
+  status: "new" | "reviewed" | "archived";
+  notes?: string;
+};
+
+export type UserProfile = {
+  uid: string;
+  email: string | null;
+  role: "admin" | "user";
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt?: string;
 };

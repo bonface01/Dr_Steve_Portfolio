@@ -24,13 +24,16 @@ export const metadata: Metadata = {
     template: "%s | Steve Muthusi, PhD"
   },
   description:
-    "Premium academic portfolio, psychology profile, leadership mentorship platform, events, blog, and PDC initiatives for Steve Muthusi, PhD.",
+    "Academic psychology, research, consultation, leadership mentorship, commentaries, and PDC initiatives for Steve Muthusi, PhD.",
   keywords: [
     "Steve Muthusi",
     "Psychology",
     "University of Nairobi",
     "Leadership mentor",
     "PDC",
+    "mentorship",
+    "commentaries",
+    "consultation",
     "Academic portfolio"
   ],
   openGraph: {
@@ -40,10 +43,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80",
+        url: "/brand/hero-speaking-wide.jpg",
         width: 1200,
         height: 630,
-        alt: "Academic leadership gathering"
+        alt: "Steve Muthusi speaking during a PDC leadership gathering"
       }
     ]
   }

@@ -1,171 +1,157 @@
 import Image from "next/image";
-import { ArrowRight, BookOpen, Mail, Newspaper } from "lucide-react";
+import { ArrowRight, Brain, GraduationCap, Handshake, MessageSquareText } from "lucide-react";
 import { BlogCard } from "@/components/BlogCard";
 import { ButtonLink } from "@/components/ButtonLink";
-import { EventCarousel } from "@/components/EventCarousel";
+import { EventCard } from "@/components/EventCard";
+import { HeroImageRotator } from "@/components/HeroImageRotator";
 import { PageTransition, Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
+import { SocialLinks } from "@/components/SocialLinks";
 import { StatsCounter } from "@/components/StatsCounter";
-import { featuredAreas } from "@/lib/content";
-import { getBlogPosts, getEvents, getTestimonials } from "@/lib/data";
+import { brandImages } from "@/lib/brand";
+import { getBlogPosts, getEvents } from "@/lib/data";
+import { splitEventsByDate } from "@/lib/events";
 
 export const revalidate = 60;
 
+const pillars = [
+  {
+    title: "Mind",
+    text: "Psychological insight for emotional intelligence, behavior, identity, and meaning.",
+    icon: Brain
+  },
+  {
+    title: "Brain",
+    text: "Research-minded teaching that connects cognition, learning, development, and wellbeing.",
+    icon: GraduationCap
+  },
+  {
+    title: "Coaching",
+    text: "Mentorship, student guidance, life coaching, and leadership development through PDC.",
+    icon: Handshake
+  },
+  {
+    title: "Development",
+    text: "Human growth, academic excellence, youth empowerment, and transformational leadership.",
+    icon: MessageSquareText
+  }
+];
+
 export default async function HomePage() {
-  const [blogPosts, events, testimonials] = await Promise.all([
-    getBlogPosts(),
-    getEvents(),
-    getTestimonials()
-  ]);
-  const featuredEvents = events.filter((event) => event.featured);
-  const latestPosts = blogPosts.slice(0, 3);
+  const [posts, events] = await Promise.all([getBlogPosts(), getEvents()]);
+  const latestPosts = posts.slice(0, 3);
+  const { upcoming, past } = splitEventsByDate(events);
+  const featuredEvent = upcoming[0] ?? past[0];
 
   return (
     <PageTransition>
-      <section className="relative min-h-[94vh] overflow-hidden bg-royal px-4 pb-14 pt-36 text-white sm:px-6 lg:px-8">
-        <Image
-          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=80"
-          alt="Academic and leadership conversation"
-          fill
-          priority
-          className="object-cover opacity-28"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-royal/72 via-royal/70 to-institutional" />
-        <div className="relative mx-auto grid max-w-7xl items-end gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <Reveal>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.34em] text-white">
-              Psychology - Academia - Leadership
+      <section className="relative min-h-[96vh] overflow-hidden bg-royal px-4 pb-16 pt-36 text-white sm:px-6 lg:px-8">
+        <HeroImageRotator images={brandImages.hero} />
+        <div className="absolute inset-0 bg-gradient-to-b from-royal/86 via-royal/72 to-institutional/95" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />
+
+        <div className="relative mx-auto flex min-h-[68vh] max-w-7xl items-end">
+          <Reveal className="max-w-5xl">
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.34em] text-white/82">
+              Academic Psychology - Leadership Development - PDC
             </p>
-            <h1 className="max-w-4xl font-heading text-6xl leading-[0.95] sm:text-7xl lg:text-8xl">
+            <h1 className="font-heading text-6xl leading-[0.95] sm:text-7xl lg:text-8xl">
               Steve Muthusi, PhD
             </h1>
-            <p className="mt-6 max-w-2xl text-xl leading-8 text-white/76">
-              Psychologist, lecturer, and leadership mentor shaping reflective practice,
-              scholarly excellence, and purposeful influence through PDC.
+            <p className="mt-5 font-heading text-3xl text-white/92 sm:text-4xl">
+              Mind • Brain • Coaching • Development
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/about" icon={ArrowRight}>Explore Profile</ButtonLink>
-              <ButtonLink href="/blog" variant="secondary" icon={Newspaper}>View Blog</ButtonLink>
-              <ButtonLink href="/contact" variant="secondary" icon={Mail}>Contact</ButtonLink>
+            <p className="mt-7 max-w-3xl text-lg leading-8 text-white/78 sm:text-xl">
+              Psychologist, university lecturer, researcher, mentor, and leadership
+              development practitioner dedicated to advancing human growth,
+              emotional well-being, academic excellence, and transformational leadership.
+            </p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <ButtonLink href="/academia" icon={ArrowRight}>Explore Academic Work</ButtonLink>
+              <ButtonLink href="/consultation" variant="secondary">Leadership & Mentorship</ButtonLink>
+              <ButtonLink href="/consultation" variant="secondary">Contact / Consultation</ButtonLink>
             </div>
-          </Reveal>
-          <Reveal delay={0.12} className="glass rounded-[8px] p-5 institutional-ring">
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              {[
-                ["University", "University of Nairobi Psychology Department"],
-                ["Platform", "PDC personal development and leadership"],
-                ["Focus", "Mental wellness, mentorship, and leadership formation"]
-              ].map(([label, text]) => (
-                <div key={label} className="rounded-[8px] bg-white/10 p-5">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-white">{label}</p>
-                  <p className="mt-3 text-sm leading-6 text-white/76">{text}</p>
-                </div>
-              ))}
-            </div>
+            <SocialLinks className="mt-6" />
           </Reveal>
         </div>
       </section>
 
       <Section
-        eyebrow="About"
-        title="A calm, scholarly voice for human growth and responsible leadership."
-        intro="Dr. Muthusi's work brings together psychology, university teaching, mentorship, and leadership formation for students, professionals, and communities."
-        className="bg-surface bg-academic-wash"
+        className="bg-white pt-16"
+        eyebrow="Platform"
+        title="A psychology-oriented platform for learning, formation, and thoughtful leadership."
+        intro="The work brings together academic psychology, mentoring practice, research, consultation, and reflective public education."
       >
-        <div className="grid gap-6 lg:grid-cols-4">
-          <div className="lg:col-span-2">
-            <Reveal className="h-full rounded-[8px] border border-navy/10 bg-white/70 p-8 shadow-institutional">
-              <BookOpen className="h-10 w-10 text-royal" />
-              <h2 className="mt-6 font-heading text-4xl text-navy">Profile Preview</h2>
-              <p className="mt-4 leading-8 text-slateText">
-                As a psychologist and lecturer, Steve Muthusi, PhD, works at the
-                meeting point of human behavior, learning, purpose, and influence.
-                His leadership platform, PDC, translates psychological insight into
-                practical mentorship and personal development.
-              </p>
-              <div className="mt-6">
-                <ButtonLink href="/about" variant="ghost">Read biography</ButtonLink>
-              </div>
-            </Reveal>
-          </div>
-          <div className="grid gap-4 lg:col-span-2">
-            <StatsCounter value={15} label="Years mentoring leaders" />
-            <StatsCounter value={1200} label="Learners and leaders reached" />
-          </div>
-        </div>
-      </Section>
-
-      <Section
-        eyebrow="Featured Areas"
-        title="Psychology, leadership, and academia held in one coherent brand."
-        intro="Each area is designed to feel distinct, but all point toward a single conviction: people grow best when insight becomes disciplined action."
-      >
-        <div className="grid gap-5 md:grid-cols-3">
-          {featuredAreas.map((area, index) => (
-            <Reveal key={area.title} delay={index * 0.08}>
-              <article className="group overflow-hidden rounded-[8px] border border-navy/10 bg-white shadow-institutional">
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={area.image}
-                    alt={area.title}
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover transition duration-700 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="font-heading text-3xl text-navy">{area.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slateText">{area.text}</p>
-                </div>
+        <div className="grid gap-4 md:grid-cols-4">
+          {pillars.map((pillar, index) => (
+            <Reveal key={pillar.title} delay={index * 0.06}>
+              <article className="h-full rounded-[8px] border border-royal/10 bg-white p-6 shadow-institutional">
+                <pillar.icon className="h-8 w-8 text-royal" />
+                <h2 className="mt-5 font-heading text-3xl text-navy">{pillar.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-slateText">{pillar.text}</p>
               </article>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      <Section
-        dark
-        eyebrow="Events"
-        title="Conversations, lectures, and leadership gatherings."
-        intro="A curated view of upcoming and recent events across PDC, university activity, public psychology lectures, and workshops."
-      >
-        <Reveal>
-          <EventCarousel events={featuredEvents} />
-        </Reveal>
+      <Section className="bg-surface" eyebrow="About" title="A psychology-centered approach to academic growth and mentorship.">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+          <Reveal>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[8px] shadow-institutional">
+              <Image
+                src={brandImages.about.src}
+                alt={brandImages.about.alt}
+                fill
+                sizes="(min-width: 1024px) 42vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="max-w-2xl text-xl leading-9 text-slateText">
+              Dr. Steve Muthusi is a psychologist, educator, researcher, and leadership mentor with a passion for understanding the human mind and empowering individuals toward personal and professional growth.
+            </p>
+            <p className="mt-5 max-w-2xl text-xl leading-9 text-slateText">
+              With experience in academic instruction, mentorship, coaching, and developmental programs, his work bridges psychology, education, leadership, and human transformation.
+            </p>
+            <p className="mt-5 max-w-2xl text-xl leading-9 text-slateText">
+              His approach combines academic rigor, practical mentorship, emotional intelligence, and people-centered development to inspire meaningful impact in students, professionals, and communities.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              <StatsCounter value={15} label="Years mentoring" />
+              <StatsCounter value={1200} label="Learners reached" />
+              <StatsCounter value={40} label="Forums and workshops" />
+            </div>
+          </Reveal>
+        </div>
       </Section>
 
       <Section
-        eyebrow="Latest Insights"
-        title="Writing on psychology, leadership, education, and wellness."
+        eyebrow="Commentaries"
+        title="Reflective writing on psychology, leadership, learning, and emotional growth."
       >
         <div className="grid gap-6 md:grid-cols-3">
           {latestPosts.map((post, index) => (
             <Reveal key={post.id} delay={index * 0.08}>
-              <BlogCard post={post} />
+              <BlogCard post={post} hrefPrefix="/commentaries" />
             </Reveal>
           ))}
         </div>
       </Section>
 
-      <Section
-        className="bg-surface"
-        eyebrow="Testimonials"
-        title="A reputation built through teaching, mentorship, and trust."
-      >
-        <div className="grid gap-5 md:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
-            <Reveal key={testimonial.id} delay={index * 0.08}>
-              <figure className="h-full rounded-[8px] border border-navy/10 bg-white p-6 shadow-institutional">
-                <blockquote className="text-lg leading-8 text-navy">"{testimonial.quote}"</blockquote>
-                <figcaption className="mt-6 text-sm text-slateText">
-                  <strong className="block text-navy">{testimonial.name}</strong>
-                  {testimonial.role}
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
+      {featuredEvent ? (
+        <Section
+          dark
+          eyebrow="Events"
+          title="Workshops, conferences, engagements, and leadership conversations."
+          intro="Events are automatically organized as upcoming or past based on their date."
+        >
+          <Reveal>
+            <EventCard event={featuredEvent} />
+          </Reveal>
+        </Section>
+      ) : null}
     </PageTransition>
   );
 }

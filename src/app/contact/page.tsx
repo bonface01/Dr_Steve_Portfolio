@@ -3,8 +3,8 @@ import { PageTransition } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 
 export const metadata = {
-  title: "Contact",
-  description: "Contact Steve Muthusi, PhD, request consultation, or connect with PDC."
+  title: "Consultation Request",
+  description: "Request consultation, mentorship, student guidance, or PDC engagement with Steve Muthusi, PhD."
 };
 
 export default function ContactPage() {
@@ -13,9 +13,9 @@ export default function ContactPage() {
       <Section
         dark
         className="pt-36"
-        eyebrow="Contact"
-        title="Start a thoughtful conversation."
-        intro="Use the form for consultation requests, speaking invitations, student mentorship, PDC programs, or academic collaboration."
+        eyebrow="Consultation"
+        title="Inquiry, mentorship, and academic consultation."
+        intro="Dr. Steve Muthusi provides mentorship, coaching, and developmental guidance focused on personal growth, leadership transformation, and human potential development."
       >
         <ContactForm />
       </Section>
