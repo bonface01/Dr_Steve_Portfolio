@@ -12,7 +12,12 @@ export const cmsRepository = {
   async save<T extends CmsEntity>(collectionName: string, localStorageKey: string, data: T): Promise<void> {
     const db = getClientDb();
     if (isFirebaseConfigured && db) {
-      await db.collection(collectionName).doc(data.id).set(data, { merge: true });
+      try {
+        await db.collection(collectionName).doc(data.id).set(data, { merge: true });
+      } catch (error) {
+        console.error(`Failed to save to Firestore (${collectionName}):`, error);
+        throw new Error("Cloud save failed. Please check your connection or permissions.");
+      }
     } else {
       const localData = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
       const filtered = localData.filter((item: any) => item.id !== data.id);
@@ -23,7 +28,12 @@ export const cmsRepository = {
   async delete(collectionName: string, localStorageKey: string, id: string): Promise<void> {
     const db = getClientDb();
     if (isFirebaseConfigured && db) {
-      await db.collection(collectionName).doc(id).delete();
+      try {
+        await db.collection(collectionName).doc(data.id).set(data, { merge: true });
+      } catch (error) {
+        console.error(`Failed to save to Firestore (${collectionName}):`, error);
+        throw new Error("Cloud save failed. Please check your connection or permissions.");
+      }
     } else {
       const localData = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
       const updated = localData.filter((item: any) => item.id !== id);
