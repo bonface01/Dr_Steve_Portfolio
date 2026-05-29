@@ -1,4 +1,14 @@
-import { getClientDb, getClientStorage, isFirebaseConfigured } from './firebase';
+import { 
+  getDb, 
+  getStorage, 
+  isFirebaseConfigured, 
+  doc, 
+  setDoc, 
+  deleteDoc,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from './firestore';
 
 export interface CmsEntity {
   id: string;
@@ -10,10 +20,11 @@ export interface CmsEntity {
  */
 export const cmsRepository = {
   async save<T extends CmsEntity>(collectionName: string, localStorageKey: string, data: T): Promise<void> {
-    const db = getClientDb();
+    const db = getDb();
     if (isFirebaseConfigured && db) {
       try {
-        await db.collection(collectionName).doc(data.id).set(data, { merge: true });
+        const docRef = doc(db, collectionName, data.id);
+        await setDoc(docRef, data, { merge: true });
       } catch (error) {
         console.error(`Failed to save to Firestore (${collectionName}):`, error);
         throw new Error("Cloud save failed. Please check your connection or permissions.");
@@ -26,10 +37,11 @@ export const cmsRepository = {
   },
 
   async delete(collectionName: string, localStorageKey: string, id: string): Promise<void> {
-    const db = getClientDb();
+    const db = getDb();
     if (isFirebaseConfigured && db) {
       try {
-        await db.collection(collectionName).doc(id).delete();
+        const docRef = doc(db, collectionName, id);
+        await deleteDoc(docRef);
       } catch (error) {
         console.error(`Failed to delete from Firestore (${collectionName}):`, error);
         throw new Error("Cloud delete failed. Please check your connection or permissions.");
@@ -42,11 +54,11 @@ export const cmsRepository = {
   },
 
   async uploadImage(file: File, folder: string): Promise<string> {
-    const storage = getClientStorage();
-    if (isFirebaseConfigured && storage) {
-      const imageRef = storage.ref(`${folder}/${Date.now()}-${file.name}`);
-      const snapshot = await imageRef.put(file);
-      return await snapshot.ref.getDownloadURL();
+    const storage = getStorage();
+    if (isFirebaseConfigured && storage && typeof window !== "undefined") {
+      const imageRef = ref(storage, `${folder}/${Date.now()}-${file.name}`);
+      const snapshot = await uploadBytes(imageRef, file);
+      return await getDownloadURL(snapshot.ref);
     }
 
     // Fallback to Base64 for local storage mode

@@ -16,7 +16,12 @@ import {
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { blogPosts, comments as seededComments, events, galleryItems } from "@/lib/content";
-import { getClientDb, isFirebaseConfigured } from "@/lib/firebase";
+import { 
+  getDb, 
+  isFirebaseConfigured, 
+  getDocs, 
+  collection 
+} from "@/lib/firestore";
 import { cmsRepository } from "@/lib/cms-repository";
 import type { BlogPost, Category, Comment, EventItem, EventType, GalleryItem } from "@/lib/types";
 import { excerptFromHtml, makeSlug } from "@/lib/utils";
@@ -80,6 +85,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [eventDraft, setEventDraft] = useState<EventItem>(emptyEvent);
   const [galleryDraft, setGalleryDraft] = useState<GalleryItem>(emptyGallery);
   const [notice, setNotice] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     loadContent();
@@ -129,18 +135,18 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   async function loadContent() {
     if (isFirebaseConfigured) {
-      const db = getClientDb();
+      const db = getDb();
       if (db) {
         const [postSnap, eventSnap, gallerySnap, commentSnap] = await Promise.all([
-          db.collection("blogPosts").get(),
-          db.collection("events").get(),
-          db.collection("galleryItems").get(),
-          db.collection("comments").get()
+          getDocs(collection(db, "blogPosts")),
+          getDocs(collection(db, "events")),
+          getDocs(collection(db, "galleryItems")),
+          getDocs(collection(db, "comments"))
         ]);
-        if (!postSnap.empty) setPosts(postSnap.docs.map((item) => item.data() as BlogPost));
-        if (!eventSnap.empty) setEventItems(eventSnap.docs.map((item) => item.data() as EventItem));
-        if (!gallerySnap.empty) setImages(gallerySnap.docs.map((item) => item.data() as GalleryItem));
-        if (!commentSnap.empty) setCommentItems(commentSnap.docs.map((item) => item.data() as Comment));
+        setPosts(postSnap.docs.map((item) => item.data() as BlogPost));
+        setEventItems(eventSnap.docs.map((item) => item.data() as EventItem));
+        setImages(gallerySnap.docs.map((item) => item.data() as GalleryItem));
+        setCommentItems(commentSnap.docs.map((item) => item.data() as Comment));
         return;
       }
     }
@@ -157,15 +163,34 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   }
 
   async function persist<T extends { id: string }>(collectionName: string, key: string, item: T) {
-    await cmsRepository.save(collectionName, key, item);
+    setIsSaving(true);
+    try {
+      await cmsRepository.save(collectionName, key, item);
+    } catch (error: any) {
+      setNotice(`Error: ${error.message}`);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   async function remove(collectionName: string, key: string, id: string) {
-    await cmsRepository.delete(collectionName, key, id);
+    setIsSaving(true);
+    try {
+      await cmsRepository.delete(collectionName, key, id);
+    } catch (error: any) {
+      setNotice(`Error: ${error.message}`);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   async function uploadImage(file: File, path: string) {
-    return cmsRepository.uploadImage(file, path);
+    setIsSaving(true);
+    try {
+      return await cmsRepository.uploadImage(file, path);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   async function handleFile(file: File | undefined, path: string, setter: (url: string) => void) {
@@ -319,13 +344,14 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 <p className="mb-2 text-sm font-bold text-navy">Content</p>
                 <RichTextEditor value={postDraft.content} onChange={(value) => setPostDraft({ ...postDraft, content: value })} />
               </div>
-              <SaveButton label="Save blog post" />
+              <SaveButton label={isSaving ? "Saving..." : "Save blog post"} disabled={isSaving} />
             </form>
             <ContentList
               items={posts}
               title="Published posts"
               onEdit={(item) => setPostDraft(item as BlogPost)}
               onDelete={(id) => deletePost(id)}
+              disabled={isSaving}
             />
           </div>
         ) : null}
@@ -343,13 +369,14 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               <TextArea label="Description" value={eventDraft.description} onChange={(value) => setEventDraft({ ...eventDraft, description: value })} />
               <UploadField onFile={(file) => handleFile(file, "events", (url) => setEventDraft({ ...eventDraft, coverImage: url }))} />
               {eventDraft.coverImage ? <PreviewImage src={eventDraft.coverImage} alt={eventDraft.title || "Event preview"} /> : null}
-              <SaveButton label="Save event" />
+              <SaveButton label={isSaving ? "Saving..." : "Save event"} disabled={isSaving} />
             </form>
             <ContentList
               items={eventItems}
               title="Events"
               onEdit={(item) => setEventDraft(item as EventItem)}
               onDelete={(id) => deleteEvent(id)}
+              disabled={isSaving}
             />
           </div>
         ) : null}
@@ -363,13 +390,14 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               <TextArea label="Description" value={galleryDraft.description} onChange={(value) => setGalleryDraft({ ...galleryDraft, description: value })} />
               <UploadField onFile={(file) => handleFile(file, "gallery", (url) => setGalleryDraft({ ...galleryDraft, image: url }))} />
               {galleryDraft.image ? <PreviewImage src={galleryDraft.image} alt={galleryDraft.title || "Gallery preview"} /> : null}
-              <SaveButton label="Save gallery image" />
+              <SaveButton label={isSaving ? "Saving..." : "Save gallery image"} disabled={isSaving} />
             </form>
             <ContentList
               items={images}
               title="Gallery images"
               onEdit={(item) => setGalleryDraft(item as GalleryItem)}
               onDelete={(id) => deleteGallery(id)}
+              disabled={isSaving}
             />
           </div>
         ) : null}
@@ -552,11 +580,12 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function SaveButton({ label }: { label: string }) {
+function SaveButton({ label, disabled }: { label: string; disabled?: boolean }) {
   return (
     <button
       type="submit"
-      className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-full bg-royal px-5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+      disabled={disabled}
+      className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-full bg-royal px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
     >
       <Save className="h-4 w-4" /> {label}
     </button>
@@ -567,12 +596,14 @@ function ContentList({
   items,
   title,
   onEdit,
-  onDelete
+  onDelete,
+  disabled
 }: {
   items: Array<{ id: string; title: string; coverImage?: string; image?: string; description?: string; excerpt?: string }>;
   title: string;
   onEdit: (item: unknown) => void;
   onDelete: (id: string) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="rounded-[8px] bg-white p-6 shadow-institutional">
@@ -596,10 +627,20 @@ function ContentList({
                 <h3 className="line-clamp-2 font-bold text-navy">{item.title}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-slateText">{item.excerpt || item.description}</p>
                 <div className="mt-3 flex gap-2">
-                  <button type="button" onClick={() => onEdit(item)} className="rounded-full bg-surface px-3 py-2 text-xs font-bold text-navy">
+                  <button 
+                    type="button" 
+                    disabled={disabled}
+                    onClick={() => onEdit(item)} 
+                    className="rounded-full bg-surface px-3 py-2 text-xs font-bold text-navy disabled:opacity-50"
+                  >
                     Edit
                   </button>
-                  <button type="button" onClick={() => onDelete(item.id)} className="rounded-full bg-royal px-3 py-2 text-xs font-bold text-white">
+                  <button 
+                    type="button" 
+                    disabled={disabled}
+                    onClick={() => onDelete(item.id)} 
+                    className="rounded-full bg-royal px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
                     Delete
                   </button>
                 </div>

@@ -27,6 +27,12 @@ export const isFirebaseConfigured = Boolean(
     firebaseConfig.appId
 );
 
+/**
+ * Determines if the application should allow demo-mode authentication.
+ * Defaults to false if Firebase is configured, unless explicitly enabled via env var.
+ */
+export const isDemoModeEnabled = !isFirebaseConfigured || process.env.NEXT_PUBLIC_ENABLE_DEMO_ADMIN === "true";
+
 let firebaseApp: any = null;
 let auth: Auth | null = null;
 let db: Firestore | null = null;

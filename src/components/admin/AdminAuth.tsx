@@ -2,7 +2,12 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { LockKeyhole } from "lucide-react";
-import { getClientAuth, isFirebaseConfigured, isDemoModeEnabled } from "@/lib/firebase";
+import { 
+  getAuth, 
+  isFirebaseConfigured, 
+  isDemoModeEnabled, 
+  signInWithEmailAndPassword 
+} from "@/lib/firestore";
 import { AdminDashboard } from "./AdminDashboard";
 
 const demoEmail = process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL || "admin@pdc.local";
@@ -14,12 +19,13 @@ export function AdminAuth() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const auth = getClientAuth();
+    const auth = getAuth();
     if (!auth) {
       setAuthed(isDemoModeEnabled && window.sessionStorage.getItem("demo-admin") === "true");
       setReady(true);
       return;
     }
+    // Note: Use modular listener in a full refactor, but auth instance works here
     return auth.onAuthStateChanged((user) => {
       setAuthed(Boolean(user));
       setReady(true);
@@ -34,10 +40,10 @@ export function AdminAuth() {
     const password = String(form.get("password"));
 
     if (isFirebaseConfigured) {
-      const auth = getClientAuth();
+      const auth = getAuth();
       if (!auth) return;
       try {
-        await auth.signInWithEmailAndPassword(email, password);
+        await signInWithEmailAndPassword(auth, email, password);
       } catch {
         setError("Invalid admin credentials.");
       }
@@ -57,7 +63,7 @@ export function AdminAuth() {
   }
 
   async function logout() {
-    const auth = getClientAuth();
+    const auth = getAuth();
     if (auth) await auth.signOut();
     window.sessionStorage.removeItem("demo-admin");
     setAuthed(false);
