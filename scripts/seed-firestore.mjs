@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
-import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
-
 import { readFile } from "node:fs/promises";
 import { cert, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
