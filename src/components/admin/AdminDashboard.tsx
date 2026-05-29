@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { blogPosts, comments as seededComments, events, galleryItems } from "@/lib/content";
-import { getClientDb, getClientStorage, isFirebaseConfigured } from "@/lib/firebase";
+import { getClientDb, isFirebaseConfigured } from "@/lib/firebase";
+import { cmsRepository } from "@/lib/cms-repository";
 import type { BlogPost, Category, Comment, EventItem, EventType, GalleryItem } from "@/lib/types";
 import { excerptFromHtml, makeSlug } from "@/lib/utils";
 import { RichTextEditor } from "./RichTextEditor";
@@ -156,45 +157,15 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   }
 
   async function persist<T extends { id: string }>(collectionName: string, key: string, item: T) {
-    if (isFirebaseConfigured) {
-      const db = getClientDb();
-      if (db) {
-        await db.collection(collectionName).doc(item.id).set(item, { merge: true });
-        return;
-      }
-    }
-    const existing = readLocal<T[]>(key, []);
-    const next = [item, ...existing.filter((entry) => entry.id !== item.id)];
-    window.localStorage.setItem(key, JSON.stringify(next));
+    await cmsRepository.save(collectionName, key, item);
   }
 
   async function remove(collectionName: string, key: string, id: string) {
-    if (isFirebaseConfigured) {
-      const db = getClientDb();
-      if (db) {
-        await db.collection(collectionName).doc(id).delete();
-        return;
-      }
-    }
-    const existing = readLocal<Array<{ id: string }>>(key, []);
-    window.localStorage.setItem(key, JSON.stringify(existing.filter((entry) => entry.id !== id)));
+    await cmsRepository.delete(collectionName, key, id);
   }
 
   async function uploadImage(file: File, path: string) {
-    if (isFirebaseConfigured) {
-      const storage = getClientStorage();
-      if (storage) {
-        const storageRef = storage.ref(`${path}/${Date.now()}-${file.name}`);
-        await storageRef.put(file);
-        return storageRef.getDownloadURL();
-      }
-    }
-
-    return new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.readAsDataURL(file);
-    });
+    return cmsRepository.uploadImage(file, path);
   }
 
   async function handleFile(file: File | undefined, path: string, setter: (url: string) => void) {

@@ -29,10 +29,10 @@ export const cmsRepository = {
     const db = getClientDb();
     if (isFirebaseConfigured && db) {
       try {
-        await db.collection(collectionName).doc(data.id).set(data, { merge: true });
+        await db.collection(collectionName).doc(id).delete();
       } catch (error) {
-        console.error(`Failed to save to Firestore (${collectionName}):`, error);
-        throw new Error("Cloud save failed. Please check your connection or permissions.");
+        console.error(`Failed to delete from Firestore (${collectionName}):`, error);
+        throw new Error("Cloud delete failed. Please check your connection or permissions.");
       }
     } else {
       const localData = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
