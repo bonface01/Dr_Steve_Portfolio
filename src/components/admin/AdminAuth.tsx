@@ -79,7 +79,7 @@ export function AdminAuth() {
         <p className="mt-3 text-sm leading-6 text-slateText">
           {isFirebaseConfigured
             ? "Sign in with a Firebase Auth administrator account."
-            : isDemoAdminEnabled
+            : isDemoModeEnabled
               ? `Demo login: ${demoEmail} / ${demoPassword}`
               : "Firebase Auth must be configured before admin access is available."}
         </p>
