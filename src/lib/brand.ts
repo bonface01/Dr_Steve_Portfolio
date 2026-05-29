@@ -1,14 +1,14 @@
 const heroImages = [
   {
-    src: "/brand/hero-stage.jpg",
+    src: "/dr_steve/hero-stage.jpg",
     alt: "A refined, stage-ready presentation moment with Dr. Steve Muthusi"
   },
   {
-    src: "/brand/hero-speaking.jpg",
+    src: "/dr_steve/hero-speaking.jpg",
     alt: "Dr. Steve Muthusi speaking confidently to a live audience"
   },
   {
-    src: "/brand/hero-audience.jpg",
+    src: "/dr_steve/hero-audience.jpg",
     alt: "A connected leadership moment with Dr. Steve Muthusi and his audience"
   }
 ];
@@ -35,7 +35,7 @@ const galleryImages = [
 export const brandImages = {
   hero: heroImages,
   about: {
-    src: "/Dr_Steve/portrait.jpg",
+    src: "/dr_steve/portrait.jpg",
     alt: "Professional portrait of Dr. Steve Muthusi"
   },
   academia: {
