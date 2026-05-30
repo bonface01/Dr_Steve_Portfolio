@@ -3,6 +3,7 @@ node_modules/
 out/
 build/
 .env*.local
+service-account.json
 .vercel/
 *.log
 .DS_Store
@@ -11,5 +12,3 @@ coverage/
 dist/
 npm-debug.log*
 yarn-debug.log*
-.vercel
-.env*

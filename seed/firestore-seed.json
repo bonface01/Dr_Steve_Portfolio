@@ -6,7 +6,7 @@
       "title": "Leadership Begins With Self-Awareness",
       "excerpt": "A psychology-informed view of leadership that starts with attention, reflection, and personal responsibility.",
       "category": "Leadership",
-      "coverImage": "/brand/hero-speaking.jpg",
+      "coverImage": "/dr_steve/hero-speaking.jpg",
       "author": "Steve Muthusi, PhD",
       "publishedAt": "2026-02-12",
       "likes": 48,
@@ -19,7 +19,7 @@
       "title": "Mental Wellness in High Performance Environments",
       "excerpt": "Why excellence must be built with rest, reflection, and psychologically safe communities.",
       "category": "Wellness",
-      "coverImage": "/brand/academia-lecture.jpg",
+      "coverImage": "/dr_steve/hero-speaking.jpg",
       "author": "Steve Muthusi, PhD",
       "publishedAt": "2026-01-24",
       "likes": 36,
@@ -34,9 +34,9 @@
       "date": "2026-06-18",
       "type": "PDC events",
       "description": "A focused leadership formation gathering for professionals, student leaders, and community builders.",
-      "coverImage": "/brand/events-group.jpg",
+      "coverImage": "/dr_steve/hero-stage.jpg",
       "gallery": [
-        "/brand/hero-speaking.jpg"
+        "/dr_steve/hero-speaking.jpg"
       ],
       "location": "Nairobi, Kenya",
       "featured": true
@@ -47,7 +47,7 @@
       "id": "gallery-001",
       "title": "Leadership cohort dialogue",
       "category": "Events",
-      "image": "/brand/gallery-reflection.jpg",
+      "image": "/dr_steve/hero-audience.jpg",
       "description": "PDC leaders discussing service, identity, and personal excellence."
     }
   ],

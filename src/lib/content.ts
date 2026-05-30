@@ -18,17 +18,17 @@ export const featuredAreas = [
   {
     title: "Psychology Practice",
     text: "Evidence-informed insight for human behavior, emotional health, and resilient personal growth.",
-    image: "/brand/hero-speaking.jpg"
+    image: "/dr_steve/hero-speaking.jpg"
   },
   {
     title: "Leadership Formation",
     text: "Mentorship and programs that help emerging leaders turn clarity, discipline, and service into impact.",
-    image: "/brand/academia-lecture.jpg"
+    image: "/dr_steve/hero-stage.jpg"
   },
   {
     title: "Academic Excellence",
     text: "Teaching, research, and scholarly contribution anchored in the University of Nairobi community.",
-    image: "/brand/hero-stage.jpg"
+    image: "/dr_steve/hero-stage.jpg"
   }
 ];
 
@@ -40,7 +40,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "A psychology-informed view of leadership that starts with attention, reflection, and personal responsibility.",
     category: "Leadership",
-    coverImage: "/brand/hero-speaking.jpg",
+    coverImage: "/dr_steve/hero-speaking.jpg",
     author: "Steve Muthusi, PhD",
     publishedAt: "2026-02-12",
     likes: 48,
@@ -55,7 +55,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Why excellence must be built with rest, reflection, and psychologically safe communities.",
     category: "Wellness",
-    coverImage: "/brand/academia-lecture.jpg",
+    coverImage: "/dr_steve/hero-stage.jpg",
     author: "Steve Muthusi, PhD",
     publishedAt: "2026-01-24",
     likes: 36,
@@ -69,7 +69,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "A reflective approach to teaching psychology in classrooms shaped by community, context, and lived experience.",
     category: "Education",
-    coverImage: "/brand/consultation-coaching.jpg",
+    coverImage: "/dr_steve/hero-audience.jpg",
     author: "Steve Muthusi, PhD",
     publishedAt: "2025-11-08",
     likes: 29,
@@ -88,10 +88,10 @@ export const events: EventItem[] = [
     type: "PDC events",
     description:
       "A focused leadership formation gathering for professionals, student leaders, and community builders.",
-    coverImage: "/brand/events-group.jpg",
+    coverImage: "/dr_steve/hero-stage.jpg",
     gallery: [
-      "/brand/hero-speaking.jpg",
-      "/brand/gallery-reflection.jpg"
+      "/dr_steve/hero-speaking.jpg",
+      "/dr_steve/hero-audience.jpg"
     ],
     location: "Nairobi, Kenya",
     featured: true
@@ -104,10 +104,10 @@ export const events: EventItem[] = [
     type: "Lectures",
     description:
       "A public conversation on emotional resilience, personal meaning, and the psychology of growth.",
-    coverImage: "/brand/events-recognition.jpg",
+    coverImage: "/dr_steve/hero-stage.jpg",
     gallery: [
-      "/brand/gallery-reflection.jpg",
-      "/brand/hero-audience.jpg"
+      "/dr_steve/hero-audience.jpg",
+      "/dr_steve/hero-audience.jpg"
     ],
     location: "University of Nairobi",
     featured: true
@@ -120,9 +120,9 @@ export const events: EventItem[] = [
     type: "Workshops",
     description:
       "A mentorship workshop helping students clarify identity, habits, career direction, and civic responsibility.",
-    coverImage: "/brand/hero-audience.jpg",
+    coverImage: "/dr_steve/hero-audience.jpg",
     gallery: [
-      "/brand/academia-lecture.jpg"
+      "/dr_steve/hero-stage.jpg"
     ],
     location: "Nairobi, Kenya"
   }
@@ -133,35 +133,35 @@ export const galleryItems: GalleryItem[] = [
     id: "gallery-001",
     title: "Leadership cohort dialogue",
     category: "Events",
-    image: "/brand/gallery-reflection.jpg",
+    image: "/dr_steve/hero-audience.jpg",
     description: "PDC leaders discussing service, identity, and personal excellence."
   },
   {
     id: "gallery-002",
     title: "University lecture session",
     category: "Lectures",
-    image: "/brand/academia-lecture.jpg",
+    image: "/dr_steve/hero-stage.jpg",
     description: "Academic teaching and student engagement in psychology."
   },
   {
     id: "gallery-003",
     title: "Mentorship workshop",
     category: "Workshops",
-    image: "/brand/consultation-coaching.jpg",
+    image: "/dr_steve/hero-audience.jpg",
     description: "Interactive leadership exercises and reflective practice."
   },
   {
     id: "gallery-004",
     title: "Community leadership circle",
     category: "Community",
-    image: "/brand/events-group.jpg",
+    image: "/dr_steve/hero-stage.jpg",
     description: "A community-centered conversation on responsibility and growth."
   },
   {
     id: "gallery-005",
     title: "Wellness conversation",
     category: "Events",
-    image: "/brand/hero-stage.jpg",
+    image: "/dr_steve/hero-stage.jpg",
     description: "A reflective session on mental wellness and personal meaning."
   }
 ];
