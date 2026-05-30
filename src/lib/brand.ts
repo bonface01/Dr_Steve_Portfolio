@@ -15,19 +15,19 @@ const heroImages = [
 
 const galleryImages = [
   {
-    src: "/brand/gallery-speaking.jpg",
+    src: "/dr_steve/hero-speaking.jpg",
     alt: "Reflective speaking moment in a high-impact leadership setting"
   },
   {
-    src: "/brand/gallery-reflection.jpg",
+    src: "/dr_steve/hero-audience.jpg",
     alt: "Calm intellectual imagery for thoughtful commentary and learning"
   },
   {
-    src: "/brand/events-group.jpg",
+    src: "/dr_steve/hero-stage.jpg",
     alt: "Group interaction and mentorship during a live event"
   },
   {
-    src: "/brand/events-recognition.jpg",
+    src: "/dr_steve/hero-audience.jpg",
     alt: "Recognition moment in a conference and professional awards setting"
   }
 ];
@@ -39,19 +39,19 @@ export const brandImages = {
     alt: "Professional portrait of Dr. Steve Muthusi"
   },
   academia: {
-    src: "/brand/academia-audience.jpg",
+    src: "/dr_steve/hero-audience.jpg",
     alt: "Academic lecture and classroom engagement"
   },
   consultation: {
-    src: "/brand/consultation-coaching.jpg",
+    src: "/dr_steve/hero-speaking.jpg",
     alt: "Mentorship and coaching in a transformation-focused conversation"
   },
   events: {
-    src: "/brand/events-group.jpg",
+    src: "/dr_steve/hero-stage.jpg",
     alt: "Leadership event with audience and group interaction"
   },
   recognition: {
-    src: "/brand/events-recognition.jpg",
+    src: "/dr_steve/hero-stage.jpg",
     alt: "Recognition moment at a formal leadership event"
   },
   gallery: galleryImages
